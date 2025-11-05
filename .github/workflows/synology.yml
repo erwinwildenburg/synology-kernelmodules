@@ -15,7 +15,7 @@ jobs:
       run: docker build . --file Dockerfile --tag synology-kernelmodules:latest 
   
     - name: Build the kernel modules
-      run: docker run --privileged --rm -v ./output:/root/output -e PLATFORM=GeminiLake -e DSM_VERSION=7.2-72806 -e KERNEL_VERSION=4.4.302 synology-kernelmodules:latest
+      run: docker run --privileged --rm -v ./output:/root/output -e PLATFORM=GeminiLake -e DSM_VERSION=7.2-72806 -e KERNEL_MAJORVERSION=4 -e KERNEL_PATCHLEVEL=4 -e KERNEL_SUBLEVEL=302 -e KERNEL_EXTRAVERSION=+ synology-kernelmodules:latest
 
     - uses: actions/upload-artifact@v4
       with:

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 L_PLATFORM=$(echo $PLATFORM | tr '[:upper:]' '[:lower:]')
-KERNEL_MINOR_VERSION=$(echo $KERNEL_VERSION | cut -d. -f1,2)
+KERNEL_VERSION="${KERNEL_MAJORVERSION}.${KERNEL_PATCHLEVEL}.${KERNEL_SUBLEVEL}"
+KERNEL_MINOR_VERSION="${KERNEL_MAJORVERSION}.${KERNEL_PATCHLEVEL}"
 
 # Setup Synology package toolkit framework
 git clone -b DSM7.2 https://github.com/SynologyOpenSource/pkgscripts-ng /toolkit/pkgscripts-ng
@@ -19,6 +20,10 @@ tar -xJf linux-$KERNEL_MINOR_VERSION.x.txz -C /usr/local/$TOOLCHAIN_FOLDER/
 cp /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER/synoconfigs/$L_PLATFORM /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER/.config
 CONFIG_CROSS_COMPILE=$(printf '%s\n' "/usr/local/$TOOLCHAIN_FOLDER/bin/$TOOLCHAIN_FOLDER-" | sed 's/[\/&]/\\&/g')
 sed -i "s/CONFIG_CROSS_COMPILE=\"\"/CONFIG_CROSS_COMPILE=\"$CONFIG_CROSS_COMPILE\"/" /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER/.config
+sed -i "s/^VERSION.*/VERSION = $KERNEL_MAJORVERSION/" /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER/Makefile
+sed -i "s/^PATCHLEVEL.*/PATCHLEVEL = $KERNEL_PATCHLEVEL/" /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER/Makefile
+sed -i "s/^SUBLEVEL.*/SUBLEVEL = $KERNEL_SUBLEVEL/" /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER/Makefile
+sed -i "s/^EXTRAVERSION.*/EXTRAVERSION = $KERNEL_EXTRAVERSION/" /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER/Makefile
 
 # Setup WireGuard
 git clone https://git.zx2c4.com/wireguard-linux-compat
