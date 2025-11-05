@@ -1,0 +1,23 @@
+name: Build Synology Kernel Modules
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag synology-kernelmodules:latest 
+  
+    - name: Build the kernel modules
+      run: docker run --privileged --rm -v ./output:/root/output -e PLATFORM=GeminiLake -e DSM_VERSION=7.2-72806 -e KERNEL_VERSION=4.4.302 synology-kernelmodules:latest
+
+    - uses: actions/upload-artifact@v4
+      with:
+        path: output/
+        if-no-files-found: error
