@@ -12,6 +12,7 @@ RUN apk add --update bash \
 WORKDIR /root
 COPY entrypoint.sh .
 COPY config_modification.json .
+RUN ["chmod", "+x", "entrypoint.sh"]
 
 ENV PLATFORM="GeminiLake"
 ENV DSM_VERSION="7.2-72806"
