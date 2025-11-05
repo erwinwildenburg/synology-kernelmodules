@@ -48,7 +48,7 @@ make -C \$KERNEL_PATH -j\$(nproc) M=net/ipv4/netfilter modules
 make -C \$KERNEL_PATH -j\$(nproc) M=net/ipv6/netfilter modules
 make -C \$KERNEL_PATH -j\$(nproc) M=net/netfilter modules
 make -C \$KERNEL_PATH -j\$(nproc) M=drivers/usb/serial modules
-make -C /source/wireguard-linux-compat/src -j$\(nproc)
+make -C /source/wireguard-linux-compat/src -j\$(nproc)
 EOF
 
 # Collect output
