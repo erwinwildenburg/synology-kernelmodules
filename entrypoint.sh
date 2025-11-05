@@ -41,14 +41,14 @@ KERNEL_PATH="/source/$KERNEL_FOLDER"
 make -C \$KERNEL_PATH oldconfig
 make -C \$KERNEL_PATH prepare
 make -C \$KERNEL_PATH modules_prepare
-make -C \$KERNEL_PATH modules -j$(nproc) KBUILD_MODPOST_NOFINAL=1
+make -C \$KERNEL_PATH modules -j\$(nproc) KBUILD_MODPOST_NOFINAL=1
 
 # Build the modules we need
-make -C \$KERNEL_PATH -j$(nproc) M=net/ipv4/netfilter modules
-make -C \$KERNEL_PATH -j$(nproc) M=net/ipv6/netfilter modules
-make -C \$KERNEL_PATH -j$(nproc) M=net/netfilter modules
-make -C \$KERNEL_PATH -j$(nproc) M=drivers/usb/serial modules
-make -C /source/wireguard-linux-compat/src -j$(nproc)
+make -C \$KERNEL_PATH -j\$(nproc) M=net/ipv4/netfilter modules
+make -C \$KERNEL_PATH -j\$(nproc) M=net/ipv6/netfilter modules
+make -C \$KERNEL_PATH -j\$(nproc) M=net/netfilter modules
+make -C \$KERNEL_PATH -j\$(nproc) M=drivers/usb/serial modules
+make -C /source/wireguard-linux-compat/src -j$\(nproc)
 EOF
 
 # Collect output
