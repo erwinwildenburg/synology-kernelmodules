@@ -23,6 +23,7 @@ sed -i "s/CONFIG_CROSS_COMPILE=\"\"/CONFIG_CROSS_COMPILE=\"$CONFIG_CROSS_COMPILE
 # Setup WireGuard
 git clone https://git.zx2c4.com/wireguard-linux-compat
 sed -i "s|KERNELDIR ?= .*|KERNELDIR ?= /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER|" wireguard-linux-compat/src/Makefile
+sed -i "s|KERNELRELEASE ?= .*|KERNELRELEASE ?= $KERNEL_VERSION|" wireguard-linux-compat/src/Makefile
 
 # Override kernel configs
 jq -r 'to_entries[] | "\(.key) \(.value)"' config_modification.json | while read -r key value; do
@@ -34,17 +35,18 @@ jq -r 'to_entries[] | "\(.key) \(.value)"' config_modification.json | while read
 done
 
 # Build
-make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER oldconfig
-make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER prepare
-make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER modules_prepare
-make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER modules -j$(nproc) KBUILD_MODPOST_NOFINAL=1
+ARCH=$(echo $TOOLCHAIN_FOLDER | cut -d- -f1)
+make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER oldconfig
+make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER prepare
+make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER modules_prepare
+make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER modules -j$(nproc) KBUILD_MODPOST_NOFINAL=1
 
 # Build the modules we need
-make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=net/ipv4/netfilter modules
-make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=net/ipv6/netfilter modules
-make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=net/netfilter modules
-make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=drivers/usb/serial modules
-make -C wireguard-linux-compat/src -j$(nproc)
+make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=net/ipv4/netfilter modules
+make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=net/ipv6/netfilter modules
+make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=net/netfilter modules
+make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=drivers/usb/serial modules
+make ARCH=$ARCH -C wireguard-linux-compat/src -j$(nproc)
 
 # Collect output
 OUTPUT_FOLDER="./output/${PLATFORM}_${DSM_VERSION}_${KERNEL_VERSION}"
