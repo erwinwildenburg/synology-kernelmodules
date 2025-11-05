@@ -38,7 +38,7 @@ done
 # Build
 chroot /toolkit/build_env/ds.$L_PLATFORM-$S_DSM_VERSION/ /bin/bash <<EOF
 KERNEL_PATH="/source/$KERNEL_FOLDER"
-make -C \$KERNEL_PATH oldconfig
+yes "" | make -C \$KERNEL_PATH oldconfig
 make -C \$KERNEL_PATH prepare
 make -C \$KERNEL_PATH modules_prepare
 make -C \$KERNEL_PATH modules -j\$(nproc) KBUILD_MODPOST_NOFINAL=1
