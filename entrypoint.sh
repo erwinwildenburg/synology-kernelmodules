@@ -36,17 +36,17 @@ done
 
 # Build
 ARCH=$(echo $TOOLCHAIN_FOLDER | cut -d- -f1)
-make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER oldconfig
-make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER prepare
-make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER modules_prepare
-make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER modules -j$(nproc) KBUILD_MODPOST_NOFINAL=1
+yes "" | make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER oldconfig ARCH=$ARCH
+make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER prepare ARCH=$ARCH
+make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER modules_prepare ARCH=$ARCH
+make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER modules -j$(nproc) KBUILD_MODPOST_NOFINAL=1 ARCH=$ARCH
 
 # Build the modules we need
-make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=net/ipv4/netfilter modules
-make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=net/ipv6/netfilter modules
-make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=net/netfilter modules
-make ARCH=$ARCH -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=drivers/usb/serial modules
-make ARCH=$ARCH -C wireguard-linux-compat/src -j$(nproc)
+make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=net/ipv4/netfilter modules ARCH=$ARCH
+make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=net/ipv6/netfilter modules ARCH=$ARCH
+make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=net/netfilter modules ARCH=$ARCH
+make -C /usr/local/$TOOLCHAIN_FOLDER/$KERNEL_FOLDER -j$(nproc) M=drivers/usb/serial modules ARCH=$ARCH
+make -C wireguard-linux-compat/src -j$(nproc) ARCH=$ARCH
 
 # Collect output
 OUTPUT_FOLDER="./output/${PLATFORM}_${DSM_VERSION}_${KERNEL_VERSION}"
